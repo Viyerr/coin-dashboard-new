@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import "./index.css"; // <-- make sure it's imported
 
 export default function Home() {
   const [coinCount, setCoinCount] = useState(0);
@@ -36,20 +37,16 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white text-center">
-      <h1 className="text-2xl mb-4">💰 Coin Counter</h1>
-      
+    <div className="container">
+      <h1>💰 Coin Counter</h1>
+
       {isLoading ? (
-        <div className="text-6xl font-bold text-blue-500 animate-pulse">...</div>
+        <p className="counter-value">...</p>
       ) : (
-        <h2 className="text-6xl font-bold text-blue-500">{coinCount}</h2>
+        <p className="counter-value">{coinCount}</p>
       )}
-      
-      <button
-        onClick={resetCoins}
-        disabled={isLoading}
-        className={`mt-6 px-6 py-2 rounded-xl ${isLoading ? 'bg-gray-600' : 'bg-red-600 hover:bg-red-700'}`}
-      >
+
+      <button onClick={resetCoins} disabled={isLoading}>
         {isLoading ? "Processing..." : "Reset"}
       </button>
     </div>
