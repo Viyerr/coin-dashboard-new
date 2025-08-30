@@ -1,36 +1,27 @@
-// App.jsx
 import { useState, useEffect } from "react";
 
 function App() {
   const [count, setCount] = useState(0);
 
-  // Fetch latest coin total from backend
-  useEffect(() => {
+  const fetchData = () => {
     fetch("https://coin-dashboard-new.vercel.app/api/data")
       .then((res) => res.json())
-      .then((data) => {
-        setCount(data.total);
-      })
-      .catch((err) => console.error("Error fetching data:", err));
+      .then((data) => setCount(data.total))
+      .catch((err) => console.error("Fetch error:", err));
+  };
 
-    // Auto-refresh every 5 seconds
-    const interval = setInterval(() => {
-      fetch("https://coin-dashboard-new.vercel.app/api/data")
-        .then((res) => res.json())
-        .then((data) => setCount(data.total));
-    }, 5000);
-
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  // Reset function
   const handleReset = async () => {
     await fetch("https://coin-dashboard-new.vercel.app/api/data", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ coinCount: -count }), // subtract current total
+      body: JSON.stringify({ coinCount: -count }),
     });
-
     setCount(0);
   };
 
@@ -42,20 +33,22 @@ function App() {
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
-        backgroundColor: "#1a1a1a",
+        backgroundColor: "#121212",
         color: "white",
+        fontFamily: "Arial, sans-serif",
       }}
     >
       <h1>💰 Coin Counter</h1>
-      <h2 style={{ fontSize: "3rem", margin: "20px" }}>{count}</h2>
+      <h2 style={{ fontSize: "3rem", margin: "20px" }}>₱{count}</h2>
       <button
         style={{
-          background: "black",
+          background: "#333",
           color: "white",
-          padding: "10px 20px",
+          padding: "12px 24px",
           borderRadius: "10px",
           cursor: "pointer",
           border: "none",
+          fontSize: "1rem",
         }}
         onClick={handleReset}
       >
