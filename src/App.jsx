@@ -1,3 +1,4 @@
+// App.jsx
 import { useState, useEffect } from "react";
 
 function App() {
