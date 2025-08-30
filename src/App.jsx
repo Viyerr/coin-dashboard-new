@@ -1,27 +1,36 @@
+// App.jsx
 import { useState, useEffect } from "react";
 
 function App() {
   const [count, setCount] = useState(0);
 
-  const fetchData = () => {
+  // Fetch latest coin total from backend
+  useEffect(() => {
     fetch("https://coin-dashboard-new.vercel.app/api/data")
       .then((res) => res.json())
-      .then((data) => setCount(data.total))
-      .catch((err) => console.error("Fetch error:", err));
-  };
+      .then((data) => {
+        setCount(data.total);
+      })
+      .catch((err) => console.error("Error fetching data:", err));
 
-  useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 3000);
+    // Auto-refresh every 5 seconds
+    const interval = setInterval(() => {
+      fetch("https://coin-dashboard-new.vercel.app/api/data")
+        .then((res) => res.json())
+        .then((data) => setCount(data.total));
+    }, 5000);
+
     return () => clearInterval(interval);
   }, []);
 
+  // Reset function
   const handleReset = async () => {
     await fetch("https://coin-dashboard-new.vercel.app/api/data", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ coinCount: -count }),
+      body: JSON.stringify({ coinCount: -count }), // subtract current total
     });
+
     setCount(0);
   };
 
@@ -33,22 +42,20 @@ function App() {
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
-        backgroundColor: "#121212",
+        backgroundColor: "#1a1a1a",
         color: "white",
-        fontFamily: "Arial, sans-serif",
       }}
     >
       <h1>💰 Coin Counter</h1>
-      <h2 style={{ fontSize: "3rem", margin: "20px" }}>₱{count}</h2>
+      <h2 style={{ fontSize: "3rem", margin: "20px" }}>{count}</h2>
       <button
         style={{
-          background: "#333",
+          background: "black",
           color: "white",
-          padding: "12px 24px",
+          padding: "10px 20px",
           borderRadius: "10px",
           cursor: "pointer",
           border: "none",
-          fontSize: "1rem",
         }}
         onClick={handleReset}
       >
@@ -58,4 +65,3 @@ function App() {
   );
 }
 
-export default App;
